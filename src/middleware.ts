@@ -17,15 +17,25 @@ export async function middleware(request: NextRequest) {
   const supabase = createClient(request, response)
   const pathname = request.nextUrl.pathname
 
+  // Redirect helper: copies any refreshed session cookies onto the redirect
+  // response so they aren't dropped when the middleware refreshes the JWT.
+  function redirectTo(path: string): NextResponse {
+    const redirect = NextResponse.redirect(new URL(path, request.url))
+    response.cookies.getAll().forEach(({ name, value }) => {
+      redirect.cookies.set(name, value)
+    })
+    return redirect
+  }
+
   // Always use getUser() — validates JWT server-side unlike getSession()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Not authenticated
+  // Not authenticated — only /login and /no-access are public
   if (!user) {
-    if (pathname === "/login") return response
-    return NextResponse.redirect(new URL("/login", request.url))
+    if (pathname === "/login" || pathname === "/no-access") return response
+    return redirectTo("/login")
   }
 
   // Authenticated user on the login page — redirect based on role
@@ -35,9 +45,17 @@ export async function middleware(request: NextRequest) {
       .select("role")
       .eq("id", user.id)
       .single()
-    const destination = profile?.role === "admin" ? "/dashboard" : "/portal"
-    return NextResponse.redirect(new URL(destination, request.url))
+
+    // No profile row means the user wasn't seeded into public.users.
+    // Send them to /no-access instead of guessing a role (which loops).
+    if (!profile) return redirectTo("/no-access")
+
+    const destination = profile.role === "admin" ? "/dashboard" : "/portal"
+    return redirectTo(destination)
   }
+
+  // /no-access is always accessible to authenticated users (breaks loop)
+  if (pathname === "/no-access") return response
 
   // Role enforcement for admin/client routes
   const isAdminRoute = ADMIN_PREFIXES.some((p) => pathname.startsWith(p))
@@ -50,11 +68,14 @@ export async function middleware(request: NextRequest) {
       .eq("id", user.id)
       .single()
 
-    if (isAdminRoute && profile?.role !== "admin") {
-      return NextResponse.redirect(new URL("/portal", request.url))
+    // Null profile on a protected route: avoid the portal↔dashboard loop
+    if (!profile) return redirectTo("/no-access")
+
+    if (isAdminRoute && profile.role !== "admin") {
+      return redirectTo("/portal")
     }
-    if (isClientRoute && profile?.role !== "client") {
-      return NextResponse.redirect(new URL("/dashboard", request.url))
+    if (isClientRoute && profile.role !== "client") {
+      return redirectTo("/dashboard")
     }
   }
 
