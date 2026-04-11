@@ -17,6 +17,7 @@ interface Props {
 
 export default async function TimeLogPage({ searchParams }: Props) {
   const params = await searchParams
+  const today = new Date().toISOString().split("T")[0]
   const supabase = await createClient()
 
   // Fetch clients and projects
@@ -67,11 +68,12 @@ export default async function TimeLogPage({ searchParams }: Props) {
       <EntryForm
         clients={(clients ?? []) as Client[]}
         projects={(projects ?? []) as Project[]}
+        defaultDate={today}
       />
 
       <div className="flex gap-6">
         <div className="flex-1 space-y-4">
-          <Suspense>
+          <Suspense fallback={null}>
             <FiltersBar clients={(clients ?? []) as Client[]} />
           </Suspense>
           <EntriesTable
