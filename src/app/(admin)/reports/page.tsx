@@ -1,4 +1,3 @@
-import { Suspense } from "react"
 import { createClient } from "@/lib/supabase/server"
 import {
   Table,
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { ExportButton } from "@/components/reports/export-button"
+import { ReportFilters } from "@/components/reports/report-filters"
 import { formatCurrency, formatHours, monthLabel, toMonthStart } from "@/lib/utils/format"
 
 interface Props {
@@ -61,9 +61,6 @@ export default async function ReportsPage({ searchParams }: Props) {
     amountDue: rows.reduce((s, r) => s + r.amountDue, 0),
   }
 
-  const MONTHS = Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: new Date(2000, i, 1).toLocaleString("en-US", { month: "long" }) }))
-  const YEARS = Array.from({ length: 5 }, (_, i) => now.getFullYear() - i)
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -78,40 +75,7 @@ export default async function ReportsPage({ searchParams }: Props) {
 
       {/* Month/Year selector */}
       <div className="flex items-center gap-3">
-        <form className="flex items-center gap-3">
-          <select
-            name="month"
-            defaultValue={month}
-            className="h-9 rounded-md border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 text-sm"
-            onChange={(e) => {
-              const url = new URL(window.location.href)
-              url.searchParams.set("month", e.target.value)
-              window.location.href = url.toString()
-            }}
-          >
-            {MONTHS.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
-          <select
-            name="year"
-            defaultValue={year}
-            className="h-9 rounded-md border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 text-sm"
-            onChange={(e) => {
-              const url = new URL(window.location.href)
-              url.searchParams.set("year", e.target.value)
-              window.location.href = url.toString()
-            }}
-          >
-            {YEARS.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
-        </form>
+        <ReportFilters year={year} month={month} />
         <span className="text-[hsl(var(--muted-foreground))] text-sm">{currentMonthLabel}</span>
       </div>
 
