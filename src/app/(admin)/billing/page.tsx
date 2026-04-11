@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { InvoiceFields } from "@/components/billing/invoice-fields"
+import { BillingFilters } from "@/components/billing/billing-filters"
 import { formatCurrency, formatHours, formatDate, monthLabel, toMonthStart } from "@/lib/utils/format"
 import type { Client, TimeEntry, BillingRecord } from "@/lib/types/database.types"
 
@@ -34,12 +35,6 @@ export default async function BillingPage({ searchParams }: Props) {
 
   const monthStart = toMonthStart(year, month)
   const monthEnd = month === 12 ? toMonthStart(year + 1, 1) : toMonthStart(year, month + 1)
-
-  const MONTHS = Array.from({ length: 12 }, (_, i) => ({
-    value: i + 1,
-    label: new Date(2000, i, 1).toLocaleString("en-US", { month: "long" }),
-  }))
-  const YEARS = Array.from({ length: 5 }, (_, i) => now.getFullYear() - i)
 
   // Fetch time entries and billing record for selected client + month
   const [{ data: entries }, { data: billingRecords }, { data: ytdEntries }, { data: ytdBilling }] =
@@ -107,56 +102,12 @@ export default async function BillingPage({ searchParams }: Props) {
 
       {/* Selectors */}
       <div className="flex items-center gap-3 flex-wrap">
-        <form className="flex items-center gap-3 flex-wrap">
-          <select
-            name="client"
-            defaultValue={selectedClientId}
-            className="h-9 rounded-md border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 text-sm min-w-[200px]"
-            onChange={(e) => {
-              const url = new URL(window.location.href)
-              url.searchParams.set("client", e.target.value)
-              window.location.href = url.toString()
-            }}
-          >
-            {activeClients.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          <select
-            name="month"
-            defaultValue={month}
-            className="h-9 rounded-md border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 text-sm"
-            onChange={(e) => {
-              const url = new URL(window.location.href)
-              url.searchParams.set("month", e.target.value)
-              window.location.href = url.toString()
-            }}
-          >
-            {MONTHS.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
-          <select
-            name="year"
-            defaultValue={year}
-            className="h-9 rounded-md border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 text-sm"
-            onChange={(e) => {
-              const url = new URL(window.location.href)
-              url.searchParams.set("year", e.target.value)
-              window.location.href = url.toString()
-            }}
-          >
-            {YEARS.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
-        </form>
+        <BillingFilters
+          clients={activeClients}
+          selectedClientId={selectedClientId}
+          year={year}
+          month={month}
+        />
         {selectedClient && (
           <span className="text-sm text-[hsl(var(--muted-foreground))]">
             {selectedClient.name} — {monthLabel(monthStart)}
