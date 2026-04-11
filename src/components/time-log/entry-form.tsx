@@ -20,16 +20,15 @@ import { createTimeEntry } from "@/app/(admin)/time-log/actions"
 interface Props {
   clients: Client[]
   projects: Project[]
+  defaultDate: string
 }
 
-const today = new Date().toISOString().split("T")[0]
-
-export function EntryForm({ clients, projects }: Props) {
+export function EntryForm({ clients, projects, defaultDate }: Props) {
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     client_id: "",
     project_id: "",
-    date: today,
+    date: defaultDate,
     description: "",
     hours: "0.25",
     billable: false,
@@ -37,10 +36,11 @@ export function EntryForm({ clients, projects }: Props) {
   })
 
   function set(field: string, value: string | boolean) {
-    setForm((f) => ({ ...f, [field]: value }))
-    if (field === "client_id") {
-      setForm((f) => ({ ...f, client_id: value as string, project_id: "" }))
-    }
+    setForm((f) => ({
+      ...f,
+      [field]: value,
+      ...(field === "client_id" ? { project_id: "" } : {}),
+    }))
   }
 
   const filteredProjects = form.client_id
