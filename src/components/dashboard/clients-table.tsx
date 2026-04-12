@@ -131,7 +131,7 @@ export function ClientsTable({ clients }: Props) {
         </p>
       </div>
 
-      <div className="rounded-md border border-[hsl(var(--border))]">
+      <div className="rounded-md border border-[hsl(var(--border))] overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

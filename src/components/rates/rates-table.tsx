@@ -74,7 +74,7 @@ export function RatesTable({ clients, rateHistory }: Props) {
 
   return (
     <>
-      <div className="rounded-md border border-[hsl(var(--border))]">
+      <div className="rounded-md border border-[hsl(var(--border))] overflow-x-auto">
         <Accordion type="multiple">
           {clients.map((client) => {
             const current = currentRate(client.id)

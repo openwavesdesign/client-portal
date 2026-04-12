@@ -63,7 +63,7 @@ export default async function ReportsPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Monthly Reports</h1>
           <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">
@@ -80,7 +80,7 @@ export default async function ReportsPage({ searchParams }: Props) {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
             <p className="text-sm text-[hsl(var(--muted-foreground))]">Total Hours</p>
@@ -102,7 +102,7 @@ export default async function ReportsPage({ searchParams }: Props) {
       </div>
 
       {/* Report table */}
-      <div className="rounded-md border border-[hsl(var(--border))]">
+      <div className="rounded-md border border-[hsl(var(--border))] overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
