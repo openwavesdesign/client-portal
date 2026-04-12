@@ -23,7 +23,7 @@ export default async function ClientLayout({ children }: { children: React.React
   return (
     <div className="min-h-screen bg-[hsl(var(--muted))]">
       <header className="sticky top-0 z-10 bg-[hsl(var(--background))] border-b border-[hsl(var(--border))]">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div>
             <span className="font-semibold">{clientName}</span>
             <span className="text-[hsl(var(--muted-foreground))] text-sm ml-2">— Client Portal</span>
@@ -31,7 +31,7 @@ export default async function ClientLayout({ children }: { children: React.React
           <SignOutButton />
         </div>
       </header>
-      <main className="max-w-5xl mx-auto px-6 py-8">{children}</main>
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">{children}</main>
     </div>
   )
 }

@@ -92,7 +92,7 @@ export default async function PortalPage() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
             <p className="text-sm text-[hsl(var(--muted-foreground))]">Total Hours</p>
@@ -116,7 +116,7 @@ export default async function PortalPage() {
       </div>
 
       {/* Current month task list */}
-      <Card>
+      <Card className="overflow-x-auto">
         <div className="p-4 border-b border-[hsl(var(--border))]">
           <h2 className="font-semibold text-sm">Work Log — {monthLabel(monthStart)}</h2>
         </div>
@@ -158,7 +158,7 @@ export default async function PortalPage() {
       {typedBilling.length > 0 && (
         <div>
           <h2 className="font-semibold mb-4">Invoice History</h2>
-          <Card>
+          <Card className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>

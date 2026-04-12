@@ -98,7 +98,7 @@ export function EntriesTable({ entries, clients, projects }: Props) {
   }
 
   return (
-    <div className="rounded-md border border-[hsl(var(--border))]">
+    <div className="rounded-md border border-[hsl(var(--border))] overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>

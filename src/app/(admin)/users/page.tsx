@@ -25,7 +25,7 @@ export default async function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Users</h1>
           <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">
@@ -35,7 +35,7 @@ export default async function UsersPage() {
         <CreateUserModal clients={(clients ?? []) as Client[]} />
       </div>
 
-      <div className="rounded-md border border-[hsl(var(--border))]">
+      <div className="rounded-md border border-[hsl(var(--border))] overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

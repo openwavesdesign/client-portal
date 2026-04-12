@@ -74,7 +74,7 @@ export function InvoiceFields({ client, month, entries, billingRecord }: Props) 
           <CardTitle className="text-base">Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div>
               <p className="text-sm text-[hsl(var(--muted-foreground))]">Total Hours</p>
               <p className="text-xl font-semibold mt-1">{formatHours(totalHours)}</p>

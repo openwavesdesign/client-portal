@@ -71,7 +71,7 @@ export function ProjectsTable({ projects }: Props) {
         </TabsList>
       </Tabs>
 
-      <div className="rounded-md border border-[hsl(var(--border))]">
+      <div className="rounded-md border border-[hsl(var(--border))] overflow-x-auto">
         <Accordion type="multiple">
           {displayed.length === 0 ? (
             <div className="text-center text-[hsl(var(--muted-foreground))] py-8 text-sm">
@@ -120,7 +120,7 @@ export function ProjectsTable({ projects }: Props) {
                   </DropdownMenu>
                 </div>
                 <AccordionContent className="px-4 pb-4">
-                  <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 text-sm">
                     <div>
                       <p className="text-[hsl(var(--muted-foreground))]">Quoted Cost</p>
                       <p className="font-medium">{project.quoted_cost ? formatCurrency(project.quoted_cost) : "—"}</p>

@@ -71,7 +71,7 @@ export default async function TimeLogPage({ searchParams }: Props) {
         defaultDate={today}
       />
 
-      <div className="flex gap-6">
+      <div className="flex flex-col gap-6 lg:flex-row">
         <div className="flex-1 space-y-4">
           <Suspense fallback={null}>
             <FiltersBar clients={(clients ?? []) as Client[]} />
@@ -82,7 +82,7 @@ export default async function TimeLogPage({ searchParams }: Props) {
             projects={(projects ?? []) as Project[]}
           />
         </div>
-        <div className="w-64 shrink-0">
+        <div className="w-full lg:w-64 lg:shrink-0">
           <MonthlySummary entries={(allEntries ?? []) as TimeEntry[]} />
         </div>
       </div>
