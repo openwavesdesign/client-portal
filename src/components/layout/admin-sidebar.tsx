@@ -28,6 +28,51 @@ const navItems = [
   { href: "/users", label: "Users", icon: Users },
 ]
 
+interface NavLinksProps {
+  pathname: string
+  onSignOut: () => void
+  onLinkClick?: () => void
+}
+
+function NavLinks({ pathname, onSignOut, onLinkClick }: NavLinksProps) {
+  return (
+    <>
+      <nav className="flex-1 p-3 space-y-1">
+        {navItems.map((item) => {
+          const Icon = item.icon
+          const isActive = pathname.startsWith(item.href)
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onLinkClick}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                isActive
+                  ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
+                  : "text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]"
+              )}
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              {item.label}
+            </Link>
+          )
+        })}
+      </nav>
+
+      <div className="p-3 border-t border-[hsl(var(--border))]">
+        <button
+          onClick={onSignOut}
+          className="flex items-center gap-3 px-3 py-2 w-full rounded-md text-sm text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))] transition-colors"
+        >
+          <LogOut className="h-4 w-4" />
+          Sign out
+        </button>
+      </div>
+    </>
+  )
+}
+
 export function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
@@ -40,45 +85,6 @@ export function AdminSidebar() {
     router.refresh()
   }
 
-  function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
-    return (
-      <>
-        <nav className="flex-1 p-3 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname.startsWith(item.href)
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onLinkClick}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                  isActive
-                    ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
-                    : "text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]"
-                )}
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
-
-        <div className="p-3 border-t border-[hsl(var(--border))]">
-          <button
-            onClick={handleSignOut}
-            className="flex items-center gap-3 px-3 py-2 w-full rounded-md text-sm text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))] transition-colors"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign out
-          </button>
-        </div>
-      </>
-    )
-  }
-
   return (
     <>
       {/* Desktop sidebar — hidden on mobile */}
@@ -87,7 +93,7 @@ export function AdminSidebar() {
           <h1 className="text-lg font-semibold">Business Portal</h1>
           <p className="text-xs text-[hsl(var(--muted-foreground))] mt-0.5">Admin</p>
         </div>
-        <NavLinks />
+        <NavLinks pathname={pathname} onSignOut={handleSignOut} />
       </aside>
 
       {/* Mobile top bar — hidden on desktop */}
@@ -124,7 +130,7 @@ export function AdminSidebar() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <NavLinks onLinkClick={() => setMobileOpen(false)} />
+            <NavLinks pathname={pathname} onSignOut={handleSignOut} onLinkClick={() => setMobileOpen(false)} />
           </aside>
         </>
       )}
