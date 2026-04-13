@@ -121,15 +121,15 @@ export function EntryForm({ clients, projects, defaultDate }: Props) {
             <div className="space-y-2">
               <Label>Project</Label>
               <Select
-                value={form.project_id}
-                onValueChange={(v) => set("project_id", v)}
+                value={form.project_id || "__none__"}
+                onValueChange={(v) => set("project_id", v === "__none__" ? "" : v)}
                 disabled={!form.client_id || filteredProjects.length === 0}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="None" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="__none__">None</SelectItem>
                   {filteredProjects.map((p) => (
                     <SelectItem key={p.id} value={p.id}>
                       {p.name}
@@ -143,14 +143,14 @@ export function EntryForm({ clients, projects, defaultDate }: Props) {
             <div className="space-y-2">
               <Label>Category</Label>
               <Select
-                value={form.category}
-                onValueChange={(v) => set("category", v)}
+                value={form.category || "__none__"}
+                onValueChange={(v) => set("category", v === "__none__" ? "" : v)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="__none__">None</SelectItem>
                   {TIME_ENTRY_CATEGORIES.map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {cat}
