@@ -42,7 +42,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { formatCurrency, formatHours, formatDate } from "@/lib/utils/format"
+import { formatCurrency, formatHours, formatDate, isClientActive } from "@/lib/utils/format"
 import type { ClientYtdSummary } from "@/lib/types/database.types"
 import { updateClient, archiveClient, restoreClient } from "@/app/(admin)/dashboard/actions"
 
@@ -65,7 +65,7 @@ export function ClientsTable({ clients }: Props) {
   const [saving, setSaving] = useState(false)
 
   const displayed = filter === "active"
-    ? clients.filter((c) => c.status === "active")
+    ? clients.filter(isClientActive)
     : clients
 
   function openEdit(client: ClientYtdSummary) {

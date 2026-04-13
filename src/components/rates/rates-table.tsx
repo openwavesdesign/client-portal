@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { formatCurrency, formatDate } from "@/lib/utils/format"
+import { formatCurrency, formatDate, isClientActive } from "@/lib/utils/format"
 import type { Client, RateHistory } from "@/lib/types/database.types"
 import { updateRate } from "@/app/(admin)/rates/actions"
 
@@ -45,7 +45,7 @@ export function RatesTable({ clients, rateHistory }: Props) {
   const [filter, setFilter] = useState<"active" | "all">("active")
 
   const displayedClients = filter === "active"
-    ? clients.filter((c) => c.status === "active")
+    ? clients.filter(isClientActive)
     : clients
 
   function clientRates(clientId: string) {

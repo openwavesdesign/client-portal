@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select"
 import type { Client } from "@/lib/types/database.types"
 import { createProject } from "@/app/(admin)/projects/actions"
+import { isClientActive } from "@/lib/utils/format"
 
 interface Props {
   clients: Client[]
@@ -68,7 +69,7 @@ export function AddProjectModal({ clients }: Props) {
     }
   }
 
-  const activeClients = clients.filter((c) => c.status === "active")
+  const activeClients = clients.filter(isClientActive)
 
   return (
     <>

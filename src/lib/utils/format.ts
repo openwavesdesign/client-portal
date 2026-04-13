@@ -39,3 +39,9 @@ export function monthLabel(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00")
   return d.toLocaleDateString("en-US", { month: "long", year: "numeric" })
 }
+
+export function isClientActive(client: { status: string; ended_at: string | null }): boolean {
+  if (client.status !== "active") return false
+  const today = new Date().toISOString().split("T")[0]
+  return !client.ended_at || client.ended_at > today
+}

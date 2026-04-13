@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import type { Client } from "@/lib/types/database.types"
+import { isClientActive } from "@/lib/utils/format"
 
 interface Props {
   clients: Client[]
@@ -70,7 +71,7 @@ export function CreateUserModal({ clients, onSuccess }: Props) {
     }
   }
 
-  const activeClients = clients.filter((c) => c.status === "active")
+  const activeClients = clients.filter(isClientActive)
 
   return (
     <>
