@@ -1,4 +1,3 @@
-import { Suspense } from "react"
 import { createClient } from "@/lib/supabase/server"
 import { EntryForm } from "@/components/time-log/entry-form"
 import { EntriesTable } from "@/components/time-log/entries-table"
@@ -20,6 +19,12 @@ export default async function TimeLogPage({ searchParams }: Props) {
   const today = new Date().toISOString().split("T")[0]
   const supabase = await createClient()
 
+  // Normalise filter values — sentinel "all" means no filter
+  const clientFilter = params.client && params.client !== "all" ? params.client : ""
+  const monthFilter = params.month && params.month !== "all" ? params.month : ""
+  const categoryFilter = params.category && params.category !== "all" ? params.category : ""
+  const billableFilter = params.billable && params.billable !== "all" ? params.billable : ""
+
   // Fetch clients and projects
   const [{ data: clients }, { data: projects }] = await Promise.all([
     supabase.from("clients").select("*").order("name"),
@@ -33,10 +38,10 @@ export default async function TimeLogPage({ searchParams }: Props) {
     .order("date", { ascending: false })
     .order("created_at", { ascending: false })
 
-  if (params.client) query = query.eq("client_id", params.client)
-  if (params.month) {
+  if (clientFilter) query = query.eq("client_id", clientFilter)
+  if (monthFilter) {
     const year = new Date().getFullYear()
-    const month = parseInt(params.month)
+    const month = parseInt(monthFilter)
     const startDate = `${year}-${String(month).padStart(2, "0")}-01`
     const endDate =
       month === 12
@@ -44,17 +49,20 @@ export default async function TimeLogPage({ searchParams }: Props) {
         : `${year}-${String(month + 1).padStart(2, "0")}-01`
     query = query.gte("date", startDate).lt("date", endDate)
   }
-  if (params.category) query = query.eq("category", params.category as Exclude<TimeEntry["category"], null>)
-  if (params.billable === "true") query = query.eq("billable", true)
-  if (params.billable === "false") query = query.eq("billable", false)
+  if (categoryFilter) query = query.eq("category", categoryFilter as TimeEntry["category"])
+  if (billableFilter === "true") query = query.eq("billable", true)
+  if (billableFilter === "false") query = query.eq("billable", false)
 
   const { data: entries } = await query
 
-  // Fetch all entries for monthly summary (no filters)
+  // Fetch all entries for monthly summary (unfiltered, current year)
   const { data: allEntries } = await supabase
     .from("time_entries")
     .select("date, hours, billable")
     .gte("date", `${new Date().getFullYear()}-01-01`)
+
+  const clientList = (clients ?? []) as Client[]
+  const projectList = (projects ?? []) as Project[]
 
   return (
     <div className="space-y-6">
@@ -66,20 +74,24 @@ export default async function TimeLogPage({ searchParams }: Props) {
       </div>
 
       <EntryForm
-        clients={(clients ?? []) as Client[]}
-        projects={(projects ?? []) as Project[]}
+        clients={clientList}
+        projects={projectList}
         defaultDate={today}
       />
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <div className="flex-1 space-y-4">
-          <Suspense fallback={null}>
-            <FiltersBar clients={(clients ?? []) as Client[]} />
-          </Suspense>
+          <FiltersBar
+            clients={clientList}
+            currentClient={clientFilter}
+            currentMonth={monthFilter}
+            currentCategory={categoryFilter}
+            currentBillable={billableFilter}
+          />
           <EntriesTable
             entries={(entries ?? []) as TimeEntry[]}
-            clients={(clients ?? []) as Client[]}
-            projects={(projects ?? []) as Project[]}
+            clients={clientList}
+            projects={projectList}
           />
         </div>
         <div className="w-full lg:w-64 lg:shrink-0">
