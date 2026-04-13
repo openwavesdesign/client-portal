@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Client, Project, TimeEntryCategory } from "@/lib/types/database.types"
 import { TIME_ENTRY_CATEGORIES } from "@/lib/types/database.types"
 import { createTimeEntry } from "@/app/(admin)/time-log/actions"
+import { isClientActive } from "@/lib/utils/format"
 
 interface Props {
   clients: Client[]
@@ -47,7 +48,7 @@ export function EntryForm({ clients, projects, defaultDate }: Props) {
     ? projects.filter((p) => p.client_id === form.client_id && p.status === "active")
     : []
 
-  const activeClients = clients.filter((c) => c.status === "active")
+  const activeClients = clients.filter(isClientActive)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

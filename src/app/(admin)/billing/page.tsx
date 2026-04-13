@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { InvoiceFields } from "@/components/billing/invoice-fields"
 import { BillingFilters } from "@/components/billing/billing-filters"
-import { formatCurrency, formatHours, formatDate, monthLabel, toMonthStart } from "@/lib/utils/format"
+import { formatCurrency, formatHours, formatDate, monthLabel, toMonthStart, isClientActive } from "@/lib/utils/format"
 import type { Client, TimeEntry, BillingRecord } from "@/lib/types/database.types"
 
 interface Props {
@@ -29,7 +29,7 @@ export default async function BillingPage({ searchParams }: Props) {
 
   const { data: clients } = await supabase.from("clients").select("*").order("name")
   const allClients = (clients ?? []) as Client[]
-  const activeClients = allClients.filter((c) => c.status === "active")
+  const activeClients = allClients.filter(isClientActive)
 
   const selectedClientId = params.client ?? activeClients[0]?.id ?? ""
   const selectedClient = allClients.find((c) => c.id === selectedClientId)
