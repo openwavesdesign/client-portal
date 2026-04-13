@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
-import { Pencil, ChevronDown } from "lucide-react"
+import { Pencil } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -28,6 +28,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formatCurrency, formatDate } from "@/lib/utils/format"
 import type { Client, RateHistory } from "@/lib/types/database.types"
 import { updateRate } from "@/app/(admin)/rates/actions"
@@ -41,6 +42,11 @@ export function RatesTable({ clients, rateHistory }: Props) {
   const [editClient, setEditClient] = useState<Client | null>(null)
   const [newRate, setNewRate] = useState("")
   const [saving, setSaving] = useState(false)
+  const [filter, setFilter] = useState<"active" | "all">("active")
+
+  const displayedClients = filter === "active"
+    ? clients.filter((c) => c.status === "active")
+    : clients
 
   function clientRates(clientId: string) {
     return rateHistory
@@ -74,9 +80,16 @@ export function RatesTable({ clients, rateHistory }: Props) {
 
   return (
     <>
+      <Tabs value={filter} onValueChange={(v) => setFilter(v as "active" | "all")} className="w-fit">
+        <TabsList>
+          <TabsTrigger value="active">Active</TabsTrigger>
+          <TabsTrigger value="all">All</TabsTrigger>
+        </TabsList>
+      </Tabs>
+
       <div className="rounded-md border border-[hsl(var(--border))] overflow-x-auto">
         <Accordion type="multiple">
-          {clients.map((client) => {
+          {displayedClients.map((client) => {
             const current = currentRate(client.id)
             const history = clientRates(client.id)
             return (
