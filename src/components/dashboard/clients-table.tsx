@@ -105,10 +105,10 @@ export function ClientsTable({ clients }: Props) {
       const client = clients.find((c) => c.id === archiveId)
       if (client?.status === "archived") {
         await restoreClient(archiveId)
-        toast.success("Client restored")
+        toast.success("Client set to active")
       } else {
         await archiveClient(archiveId)
-        toast.success("Client archived")
+        toast.success("Client set to inactive")
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed")
@@ -156,8 +156,8 @@ export function ClientsTable({ clients }: Props) {
                 <TableRow key={client.id}>
                   <TableCell className="font-medium">{client.name}</TableCell>
                   <TableCell>
-                    <Badge variant={client.status === "active" ? "active" : "archived"}>
-                      {client.status}
+                    <Badge variant={client.status === "active" ? "active" : "inactive"}>
+                      {client.status === "archived" ? "inactive" : client.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-[hsl(var(--muted-foreground))]">
@@ -192,12 +192,12 @@ export function ClientsTable({ clients }: Props) {
                           {client.status === "active" ? (
                             <>
                               <Archive className="h-4 w-4" />
-                              Archive
+                              Mark Inactive
                             </>
                           ) : (
                             <>
                               <ArchiveRestore className="h-4 w-4" />
-                              Restore
+                              Mark Active
                             </>
                           )}
                         </DropdownMenuItem>
@@ -273,8 +273,8 @@ export function ClientsTable({ clients }: Props) {
           <AlertDialogHeader>
             <AlertDialogTitle>
               {clients.find((c) => c.id === archiveId)?.status === "archived"
-                ? "Restore client?"
-                : "Archive client?"}
+                ? "Mark client as active?"
+                : "Mark client as inactive?"}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {clients.find((c) => c.id === archiveId)?.status === "archived"
