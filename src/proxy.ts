@@ -12,7 +12,7 @@ const ADMIN_PREFIXES = [
 ]
 const CLIENT_PREFIXES = ["/portal"]
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next({ request })
   const supabase = createClient(request, response)
   const pathname = request.nextUrl.pathname
