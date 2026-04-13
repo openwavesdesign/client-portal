@@ -137,14 +137,14 @@ export function EntriesTable({ entries, clients, projects }: Props) {
                     <TableCell className="text-sm">{clientName(entry.client_id)}</TableCell>
                     <TableCell>
                       <Select
-                        value={editForm.project_id ?? ""}
-                        onValueChange={(v) => setEditForm((f) => ({ ...f, project_id: v || null }))}
+                        value={editForm.project_id ?? "__none__"}
+                        onValueChange={(v) => setEditForm((f) => ({ ...f, project_id: v === "__none__" ? null : v }))}
                       >
                         <SelectTrigger className="h-7 text-xs">
                           <SelectValue placeholder="None" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">None</SelectItem>
+                          <SelectItem value="__none__">None</SelectItem>
                           {projects
                             .filter((p) => p.client_id === entry.client_id)
                             .map((p) => (
@@ -164,14 +164,14 @@ export function EntriesTable({ entries, clients, projects }: Props) {
                     </TableCell>
                     <TableCell>
                       <Select
-                        value={editForm.category ?? ""}
-                        onValueChange={(v) => setEditForm((f) => ({ ...f, category: (v as TimeEntry["category"]) || null }))}
+                        value={editForm.category ?? "__none__"}
+                        onValueChange={(v) => setEditForm((f) => ({ ...f, category: v === "__none__" ? null : (v as Exclude<TimeEntry["category"], null>) }))}
                       >
                         <SelectTrigger className="h-7 text-xs">
                           <SelectValue placeholder="None" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">None</SelectItem>
+                          <SelectItem value="__none__">None</SelectItem>
                           {TIME_ENTRY_CATEGORIES.map((cat) => (
                             <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                           ))}
