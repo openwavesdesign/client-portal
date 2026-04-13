@@ -28,10 +28,11 @@ export default async function BillingPage({ searchParams }: Props) {
   const month = parseInt(params.month ?? String(now.getMonth() + 1))
 
   const { data: clients } = await supabase.from("clients").select("*").order("name")
-  const activeClients = (clients ?? []) as Client[]
+  const allClients = (clients ?? []) as Client[]
+  const activeClients = allClients.filter((c) => c.status === "active")
 
   const selectedClientId = params.client ?? activeClients[0]?.id ?? ""
-  const selectedClient = activeClients.find((c) => c.id === selectedClientId)
+  const selectedClient = allClients.find((c) => c.id === selectedClientId)
 
   const monthStart = toMonthStart(year, month)
   const monthEnd = month === 12 ? toMonthStart(year + 1, 1) : toMonthStart(year, month + 1)

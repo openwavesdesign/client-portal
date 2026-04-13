@@ -30,7 +30,11 @@ export async function createClient_(data: ClientInsert) {
 
 export async function updateClient(id: string, data: ClientUpdate) {
   const supabase = await createClient()
-  const { error } = await supabase.from("clients").update(data).eq("id", id)
+  const update: ClientUpdate = { ...data }
+  if ("ended_at" in data) {
+    update.status = data.ended_at ? "archived" : "active"
+  }
+  const { error } = await supabase.from("clients").update(update).eq("id", id)
   if (error) throw new Error(error.message)
   revalidatePath("/dashboard")
 }
