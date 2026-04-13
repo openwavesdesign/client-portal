@@ -32,7 +32,8 @@ export async function updateClient(id: string, data: ClientUpdate) {
   const supabase = await createClient()
   const update: ClientUpdate = { ...data }
   if ("ended_at" in data) {
-    update.status = data.ended_at ? "archived" : "active"
+    const today = new Date().toISOString().split("T")[0]
+    update.status = (data.ended_at && data.ended_at <= today) ? "archived" : "active"
   }
   const { error } = await supabase.from("clients").update(update).eq("id", id)
   if (error) throw new Error(error.message)
