@@ -49,7 +49,7 @@ export default async function TimeLogPage({ searchParams }: Props) {
         : `${year}-${String(month + 1).padStart(2, "0")}-01`
     query = query.gte("date", startDate).lt("date", endDate)
   }
-  if (categoryFilter) query = query.eq("category", categoryFilter as TimeEntry["category"])
+  if (categoryFilter) query = query.eq("category", categoryFilter as Exclude<TimeEntry["category"], null>)
   if (billableFilter === "true") query = query.eq("billable", true)
   if (billableFilter === "false") query = query.eq("billable", false)
 
