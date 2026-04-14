@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { InvoiceFields } from "@/components/billing/invoice-fields"
 import { BillingFilters } from "@/components/billing/billing-filters"
 import { formatCurrency, formatHours, formatDate, monthLabel, toMonthStart, isClientActive } from "@/lib/utils/format"
@@ -82,11 +81,6 @@ export default async function BillingPage({ searchParams }: Props) {
   // YTD calculations
   const ytdTotalHours = (ytdEntries ?? []).reduce((s: number, e: { hours: number }) => s + e.hours, 0)
   const ytdBillableHours = (ytdEntries ?? []).filter((e: { billable: boolean }) => e.billable).reduce((s: number, e: { hours: number }) => s + e.hours, 0)
-  const ytdBilledAmount = (ytdBilling ?? []).filter((b: BillingRecord) => b.invoiced).reduce(() => {
-    // We'd need to join with entries to compute this properly; approximate using billable hours × rate
-    return 0
-  }, 0)
-
   const ytdTotalBilled = (ytdBillableHours * (selectedClient?.hourly_rate ?? 0))
   const ytdTotalPaid = (ytdBilling ?? []).filter((b: BillingRecord) => b.paid).length > 0
     ? ytdTotalBilled
