@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation"
 import {
   LayoutDashboard,
   Clock,
-  DollarSign,
   BarChart3,
   Receipt,
   FolderKanban,
@@ -21,7 +20,6 @@ import { createClient } from "@/lib/supabase/client"
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/time-log", label: "Time Log", icon: Clock },
-  { href: "/rates", label: "Rates", icon: DollarSign },
   { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/billing", label: "Billing", icon: Receipt },
   { href: "/projects", label: "Projects", icon: FolderKanban },
