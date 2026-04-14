@@ -35,6 +35,7 @@ export function AddProjectModal({ clients }: Props) {
     client_id: "",
     name: "",
     quoted_cost: "",
+    invoiced_amount: "",
     projected_hours: "",
     projected_rate: "",
   })
@@ -55,13 +56,14 @@ export function AddProjectModal({ clients }: Props) {
         client_id: form.client_id,
         name: form.name,
         quoted_cost: form.quoted_cost ? parseFloat(form.quoted_cost) : null,
+        invoiced_amount: form.invoiced_amount ? parseFloat(form.invoiced_amount) : 0,
         projected_hours: form.projected_hours ? parseFloat(form.projected_hours) : null,
         projected_rate: form.projected_rate ? parseFloat(form.projected_rate) : null,
         status: "active",
       })
       toast.success("Project created")
       setOpen(false)
-      setForm({ client_id: "", name: "", quoted_cost: "", projected_hours: "", projected_rate: "" })
+      setForm({ client_id: "", name: "", quoted_cost: "", invoiced_amount: "", projected_hours: "", projected_rate: "" })
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to create project")
     } finally {
@@ -102,7 +104,7 @@ export function AddProjectModal({ clients }: Props) {
               <Label>Project Name *</Label>
               <Input value={form.name} onChange={(e) => set("name", e.target.value)} required />
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label>Quoted Cost ($)</Label>
                 <Input
@@ -113,6 +115,18 @@ export function AddProjectModal({ clients }: Props) {
                   onChange={(e) => set("quoted_cost", e.target.value)}
                 />
               </div>
+              <div className="space-y-2">
+                <Label>Invoiced ($)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.invoiced_amount}
+                  onChange={(e) => set("invoiced_amount", e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label>Proj. Hours</Label>
                 <Input

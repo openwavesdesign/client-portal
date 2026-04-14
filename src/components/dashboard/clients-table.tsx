@@ -142,13 +142,14 @@ export function ClientsTable({ clients }: Props) {
               <TableHead className="text-right">Projects</TableHead>
               <TableHead className="text-right">YTD Hours</TableHead>
               <TableHead className="text-right">YTD Revenue</TableHead>
+              <TableHead className="text-right">Outstanding</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {displayed.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-[hsl(var(--muted-foreground))] py-8">
+                <TableCell colSpan={9} className="text-center text-[hsl(var(--muted-foreground))] py-8">
                   No clients found
                 </TableCell>
               </TableRow>
@@ -172,6 +173,11 @@ export function ClientsTable({ clients }: Props) {
                   <TableCell className="text-right">{client.project_count}</TableCell>
                   <TableCell className="text-right">{formatHours(client.ytd_hours)}</TableCell>
                   <TableCell className="text-right">{formatCurrency(client.ytd_revenue)}</TableCell>
+                  <TableCell className="text-right">
+                    {client.outstanding_balance > 0
+                      ? formatCurrency(client.outstanding_balance)
+                      : "—"}
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

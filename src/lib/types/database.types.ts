@@ -83,6 +83,7 @@ export type Database = {
           client_id: string
           name: string
           quoted_cost: number | null
+          invoiced_amount: number
           projected_hours: number | null
           projected_rate: number | null
           status: "active" | "archived"
@@ -93,6 +94,7 @@ export type Database = {
           client_id: string
           name: string
           quoted_cost?: number | null
+          invoiced_amount?: number
           projected_hours?: number | null
           projected_rate?: number | null
           status?: "active" | "archived"
@@ -103,6 +105,7 @@ export type Database = {
           client_id?: string
           name?: string
           quoted_cost?: number | null
+          invoiced_amount?: number
           projected_hours?: number | null
           projected_rate?: number | null
           status?: "active" | "archived"
@@ -276,6 +279,7 @@ export type Database = {
           project_count: number
           ytd_hours: number
           ytd_revenue: number
+          outstanding_balance: number
         }
         Relationships: []
       }
@@ -286,6 +290,7 @@ export type Database = {
           client_name: string
           name: string
           quoted_cost: number | null
+          invoiced_amount: number
           projected_hours: number | null
           projected_rate: number | null
           status: "active" | "archived"
