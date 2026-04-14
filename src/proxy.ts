@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/middleware"
 const ADMIN_PREFIXES = [
   "/dashboard",
   "/time-log",
-  "/rates",
   "/reports",
   "/billing",
   "/projects",

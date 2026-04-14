@@ -138,6 +138,7 @@ export function ClientsTable({ clients }: Props) {
               <TableHead>Client</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Started</TableHead>
+              <TableHead className="text-right">Rate</TableHead>
               <TableHead className="text-right">Projects</TableHead>
               <TableHead className="text-right">YTD Hours</TableHead>
               <TableHead className="text-right">YTD Revenue</TableHead>
@@ -147,7 +148,7 @@ export function ClientsTable({ clients }: Props) {
           <TableBody>
             {displayed.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-[hsl(var(--muted-foreground))] py-8">
+                <TableCell colSpan={8} className="text-center text-[hsl(var(--muted-foreground))] py-8">
                   No clients found
                 </TableCell>
               </TableRow>
@@ -162,6 +163,11 @@ export function ClientsTable({ clients }: Props) {
                   </TableCell>
                   <TableCell className="text-[hsl(var(--muted-foreground))]">
                     {formatDate(client.started_at)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {client.hourly_rate === 0
+                      ? <Badge variant="secondary">Project-based</Badge>
+                      : formatCurrency(client.hourly_rate) + "/hr"}
                   </TableCell>
                   <TableCell className="text-right">{client.project_count}</TableCell>
                   <TableCell className="text-right">{formatHours(client.ytd_hours)}</TableCell>
