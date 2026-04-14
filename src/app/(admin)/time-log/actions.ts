@@ -24,3 +24,11 @@ export async function deleteTimeEntry(id: string) {
   if (error) throw new Error(error.message)
   revalidatePath("/time-log")
 }
+
+export async function importTimeEntries(entries: TimeEntryInsert[]) {
+  if (entries.length === 0) return
+  const supabase = await createClient()
+  const { error } = await supabase.from("time_entries").insert(entries)
+  if (error) throw new Error(error.message)
+  revalidatePath("/time-log")
+}

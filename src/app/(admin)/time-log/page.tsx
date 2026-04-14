@@ -3,6 +3,7 @@ import { EntryForm } from "@/components/time-log/entry-form"
 import { EntriesTable } from "@/components/time-log/entries-table"
 import { FiltersBar } from "@/components/time-log/filters-bar"
 import { MonthlySummary } from "@/components/time-log/monthly-summary"
+import { CsvImport } from "@/components/time-log/csv-import"
 import type { Client, Project, TimeEntry } from "@/lib/types/database.types"
 
 interface Props {
@@ -66,11 +67,14 @@ export default async function TimeLogPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Time Log</h1>
-        <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">
-          Track and manage time entries
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Time Log</h1>
+          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">
+            Track and manage time entries
+          </p>
+        </div>
+        <CsvImport clients={clientList} projects={projectList} />
       </div>
 
       <EntryForm
