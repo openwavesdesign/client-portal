@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server"
 import { EntryForm } from "@/components/time-log/entry-form"
 import { EntriesTable } from "@/components/time-log/entries-table"
 import { FiltersBar } from "@/components/time-log/filters-bar"
-import { MonthlySummary } from "@/components/time-log/monthly-summary"
 import { CsvImport } from "@/components/time-log/csv-import"
 import type { Client, Project, TimeEntry } from "@/lib/types/database.types"
 
@@ -56,12 +55,6 @@ export default async function TimeLogPage({ searchParams }: Props) {
 
   const { data: entries } = await query
 
-  // Fetch all entries for monthly summary (unfiltered, current year)
-  const { data: allEntries } = await supabase
-    .from("time_entries")
-    .select("date, hours, billable")
-    .gte("date", `${new Date().getFullYear()}-01-01`)
-
   const clientList = (clients ?? []) as Client[]
   const projectList = (projects ?? []) as Project[]
 
@@ -83,24 +76,19 @@ export default async function TimeLogPage({ searchParams }: Props) {
         defaultDate={today}
       />
 
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="flex-1 space-y-4">
-          <FiltersBar
-            clients={clientList}
-            currentClient={clientFilter}
-            currentMonth={monthFilter}
-            currentCategory={categoryFilter}
-            currentBillable={billableFilter}
-          />
-          <EntriesTable
-            entries={(entries ?? []) as TimeEntry[]}
-            clients={clientList}
-            projects={projectList}
-          />
-        </div>
-        <div className="w-full lg:w-64 lg:shrink-0">
-          <MonthlySummary entries={(allEntries ?? []) as TimeEntry[]} />
-        </div>
+      <div className="space-y-4">
+        <FiltersBar
+          clients={clientList}
+          currentClient={clientFilter}
+          currentMonth={monthFilter}
+          currentCategory={categoryFilter}
+          currentBillable={billableFilter}
+        />
+        <EntriesTable
+          entries={(entries ?? []) as TimeEntry[]}
+          clients={clientList}
+          projects={projectList}
+        />
       </div>
     </div>
   )
