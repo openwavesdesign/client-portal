@@ -52,6 +52,7 @@ export function ProjectsTable({ projects, clients }: Props) {
     client_id: "",
     name: "",
     quoted_cost: "",
+    invoiced_amount: "",
     projected_hours: "",
   })
 
@@ -67,6 +68,7 @@ export function ProjectsTable({ projects, clients }: Props) {
       client_id: project.client_id,
       name: project.name,
       quoted_cost: project.quoted_cost?.toString() ?? "",
+      invoiced_amount: project.invoiced_amount > 0 ? project.invoiced_amount.toString() : "",
       projected_hours: project.projected_hours?.toString() ?? "",
     })
   }
@@ -83,6 +85,7 @@ export function ProjectsTable({ projects, clients }: Props) {
         client_id: editValues.client_id,
         name: editValues.name,
         quoted_cost: quotedCost,
+        invoiced_amount: editValues.invoiced_amount ? parseFloat(editValues.invoiced_amount) : 0,
         projected_hours: projectedHours,
         projected_rate: calcProjectedRate(quotedCost, projectedHours),
       })
@@ -119,6 +122,7 @@ export function ProjectsTable({ projects, clients }: Props) {
               <th className="px-4 py-3 text-left">Client</th>
               <th className="px-4 py-3 text-left">Project</th>
               <th className="px-4 py-3 text-right">Quote</th>
+              <th className="px-4 py-3 text-right">Invoiced</th>
               <th className="px-4 py-3 text-right">Projected Hours</th>
               <th className="px-4 py-3 text-right">Projected Rate</th>
               <th className="px-4 py-3 text-right">Actual Hours</th>
@@ -129,7 +133,7 @@ export function ProjectsTable({ projects, clients }: Props) {
           <tbody>
             {displayed.length === 0 ? (
               <tr>
-                <td colSpan={8} className="text-center text-[hsl(var(--muted-foreground))] py-8">
+                <td colSpan={9} className="text-center text-[hsl(var(--muted-foreground))] py-8">
                   No projects found
                 </td>
               </tr>
@@ -194,6 +198,22 @@ export function ProjectsTable({ projects, clients }: Props) {
                         />
                       ) : (
                         project.quoted_cost ? formatCurrency(project.quoted_cost) : "—"
+                      )}
+                    </td>
+
+                    {/* Invoiced */}
+                    <td className="px-4 py-3 text-right">
+                      {isEditing ? (
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={editValues.invoiced_amount}
+                          onChange={(e) => setEditValues((v) => ({ ...v, invoiced_amount: e.target.value }))}
+                          className="h-8 text-sm text-right w-28 ml-auto"
+                        />
+                      ) : (
+                        project.invoiced_amount > 0 ? formatCurrency(project.invoiced_amount) : "—"
                       )}
                     </td>
 
