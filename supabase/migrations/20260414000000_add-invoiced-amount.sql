@@ -7,8 +7,11 @@
 ALTER TABLE public.projects
   ADD COLUMN IF NOT EXISTS invoiced_amount decimal(10,2) DEFAULT 0;
 
--- Update project_actuals view to expose invoiced_amount
-CREATE OR REPLACE VIEW public.project_actuals AS
+-- Update project_actuals view to expose invoiced_amount.
+-- Must DROP first: CREATE OR REPLACE VIEW cannot insert a column
+-- in the middle of an existing view's column list.
+DROP VIEW IF EXISTS public.project_actuals;
+CREATE VIEW public.project_actuals AS
 SELECT
   p.id,
   p.client_id,
@@ -34,7 +37,9 @@ GROUP BY p.id, c.name;
 -- Update client_ytd_summary view:
 --   ytd_revenue now includes invoiced project amounts
 --   outstanding_balance = open project remainders + unpaid monthly billing
-CREATE OR REPLACE VIEW public.client_ytd_summary AS
+-- DROP first for the same reason as project_actuals above.
+DROP VIEW IF EXISTS public.client_ytd_summary;
+CREATE VIEW public.client_ytd_summary AS
 WITH project_stats AS (
   SELECT
     client_id,
