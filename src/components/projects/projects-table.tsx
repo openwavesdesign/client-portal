@@ -81,7 +81,7 @@ export function ProjectsTable({ projects, clients }: Props) {
     try {
       const quotedCost = editValues.quoted_cost ? parseFloat(editValues.quoted_cost) : null
       const projectedHours = editValues.projected_hours ? parseFloat(editValues.projected_hours) : null
-      await updateProject(id, {
+      const result = await updateProject(id, {
         client_id: editValues.client_id,
         name: editValues.name,
         quoted_cost: quotedCost,
@@ -89,6 +89,10 @@ export function ProjectsTable({ projects, clients }: Props) {
         projected_hours: projectedHours,
         projected_rate: calcProjectedRate(quotedCost, projectedHours),
       })
+      if (result.error) {
+        toast.error(result.error)
+        return
+      }
       toast.success("Project updated")
       setEditingId(null)
     } catch (err) {
@@ -98,7 +102,11 @@ export function ProjectsTable({ projects, clients }: Props) {
 
   async function handleArchive(id: string) {
     try {
-      await archiveProject(id)
+      const result = await archiveProject(id)
+      if (result.error) {
+        toast.error(result.error)
+        return
+      }
       toast.success("Project archived")
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed")

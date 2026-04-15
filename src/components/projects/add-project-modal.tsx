@@ -52,7 +52,7 @@ export function AddProjectModal({ clients }: Props) {
     }
     setLoading(true)
     try {
-      await createProject({
+      const result = await createProject({
         client_id: form.client_id,
         name: form.name,
         quoted_cost: form.quoted_cost ? parseFloat(form.quoted_cost) : null,
@@ -61,6 +61,10 @@ export function AddProjectModal({ clients }: Props) {
         projected_rate: form.projected_rate ? parseFloat(form.projected_rate) : null,
         status: "active",
       })
+      if (result.error) {
+        toast.error(result.error)
+        return
+      }
       toast.success("Project created")
       setOpen(false)
       setForm({ client_id: "", name: "", quoted_cost: "", invoiced_amount: "", projected_hours: "", projected_rate: "" })
