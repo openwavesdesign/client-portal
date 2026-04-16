@@ -16,7 +16,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,10 +40,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formatCurrency, formatHours, formatDate, isClientActive } from "@/lib/utils/format"
 import type { ClientYtdSummary } from "@/lib/types/database.types"
 import { updateClient, archiveClient, restoreClient } from "@/app/(admin)/dashboard/actions"
+import { useSettings, DEFAULT_SETTINGS } from "@/lib/hooks/use-settings"
 
 interface Props {
   clients: ClientYtdSummary[]
@@ -52,7 +51,10 @@ interface Props {
 
 export function ClientsTable({ clients }: Props) {
   const router = useRouter()
-  const [filter, setFilter] = useState<"active" | "all">("active")
+  const { settings, mounted } = useSettings()
+  const cols = mounted ? settings.clientList.columns : DEFAULT_SETTINGS.clientList.columns
+  const filterActive = mounted ? settings.clientList.filterActive : true
+
   const [editClient, setEditClient] = useState<ClientYtdSummary | null>(null)
   const [archiveId, setArchiveId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState({
@@ -60,13 +62,22 @@ export function ClientsTable({ clients }: Props) {
     started_at: "",
     ended_at: "",
     hourly_rate: "0",
-    notes: "",
   })
   const [saving, setSaving] = useState(false)
 
-  const displayed = filter === "active"
-    ? clients.filter(isClientActive)
-    : clients
+  const displayed = filterActive ? clients.filter(isClientActive) : clients
+
+  // Count visible optional columns for empty-state colSpan
+  const visibleOptional = [
+    cols.status,
+    cols.started,
+    cols.rate,
+    cols.projects,
+    cols.ytdHours,
+    cols.ytdRevenue,
+    cols.outstanding,
+  ].filter(Boolean).length
+  const colSpan = 2 + visibleOptional // Client + optional + Actions
 
   function openEdit(client: ClientYtdSummary) {
     setEditForm({
@@ -74,7 +85,6 @@ export function ClientsTable({ clients }: Props) {
       started_at: client.started_at ?? "",
       ended_at: client.ended_at ?? "",
       hourly_rate: String(client.hourly_rate),
-      notes: "",
     })
     setEditClient(client)
   }
@@ -119,13 +129,7 @@ export function ClientsTable({ clients }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <Tabs value={filter} onValueChange={(v) => setFilter(v as "active" | "all")}>
-          <TabsList>
-            <TabsTrigger value="active">Active</TabsTrigger>
-            <TabsTrigger value="all">All</TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <div className="flex items-center justify-end">
         <p className="text-sm text-[hsl(var(--muted-foreground))]">
           {displayed.length} client{displayed.length !== 1 ? "s" : ""}
         </p>
@@ -136,20 +140,20 @@ export function ClientsTable({ clients }: Props) {
           <TableHeader>
             <TableRow>
               <TableHead>Client</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Started</TableHead>
-              <TableHead className="text-right">Rate</TableHead>
-              <TableHead className="text-right">Projects</TableHead>
-              <TableHead className="text-right">YTD Hours</TableHead>
-              <TableHead className="text-right">YTD Revenue</TableHead>
-              <TableHead className="text-right">Outstanding</TableHead>
+              {cols.status && <TableHead>Status</TableHead>}
+              {cols.started && <TableHead>Started</TableHead>}
+              {cols.rate && <TableHead className="text-right">Rate</TableHead>}
+              {cols.projects && <TableHead className="text-right">Projects</TableHead>}
+              {cols.ytdHours && <TableHead className="text-right">YTD Hours</TableHead>}
+              {cols.ytdRevenue && <TableHead className="text-right">YTD Revenue</TableHead>}
+              {cols.outstanding && <TableHead className="text-right">Outstanding</TableHead>}
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {displayed.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center text-[hsl(var(--muted-foreground))] py-8">
+                <TableCell colSpan={colSpan} className="text-center text-[hsl(var(--muted-foreground))] py-8">
                   No clients found
                 </TableCell>
               </TableRow>
@@ -157,27 +161,41 @@ export function ClientsTable({ clients }: Props) {
               displayed.map((client) => (
                 <TableRow key={client.id}>
                   <TableCell className="font-medium">{client.name}</TableCell>
-                  <TableCell>
-                    <Badge variant={client.status === "active" ? "active" : "inactive"}>
-                      {client.status === "archived" ? "inactive" : client.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-[hsl(var(--muted-foreground))]">
-                    {formatDate(client.started_at)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {client.hourly_rate === 0
-                      ? <Badge variant="secondary">Project-based</Badge>
-                      : formatCurrency(client.hourly_rate) + "/hr"}
-                  </TableCell>
-                  <TableCell className="text-right">{client.project_count}</TableCell>
-                  <TableCell className="text-right">{formatHours(client.ytd_hours)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(client.ytd_revenue)}</TableCell>
-                  <TableCell className="text-right">
-                    {client.outstanding_balance > 0
-                      ? formatCurrency(client.outstanding_balance)
-                      : "—"}
-                  </TableCell>
+                  {cols.status && (
+                    <TableCell>
+                      <Badge variant={client.status === "active" ? "active" : "inactive"}>
+                        {client.status === "archived" ? "inactive" : client.status}
+                      </Badge>
+                    </TableCell>
+                  )}
+                  {cols.started && (
+                    <TableCell className="text-[hsl(var(--muted-foreground))]">
+                      {formatDate(client.started_at)}
+                    </TableCell>
+                  )}
+                  {cols.rate && (
+                    <TableCell className="text-right">
+                      {client.hourly_rate === 0
+                        ? <Badge variant="secondary">Project-based</Badge>
+                        : formatCurrency(client.hourly_rate) + "/hr"}
+                    </TableCell>
+                  )}
+                  {cols.projects && (
+                    <TableCell className="text-right">{client.project_count}</TableCell>
+                  )}
+                  {cols.ytdHours && (
+                    <TableCell className="text-right">{formatHours(client.ytd_hours)}</TableCell>
+                  )}
+                  {cols.ytdRevenue && (
+                    <TableCell className="text-right">{formatCurrency(client.ytd_revenue)}</TableCell>
+                  )}
+                  {cols.outstanding && (
+                    <TableCell className="text-right">
+                      {client.outstanding_balance > 0
+                        ? formatCurrency(client.outstanding_balance)
+                        : "—"}
+                    </TableCell>
+                  )}
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

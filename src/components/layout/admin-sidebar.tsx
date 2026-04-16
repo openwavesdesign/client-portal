@@ -10,6 +10,7 @@ import {
   Receipt,
   FolderKanban,
   Users,
+  Settings,
   LogOut,
   Menu,
   X,
@@ -24,6 +25,7 @@ const navItems = [
   { href: "/billing", label: "Billing", icon: Receipt },
   { href: "/projects", label: "Projects", icon: FolderKanban },
   { href: "/users", label: "Users", icon: Users },
+  { href: "/settings", label: "Settings", icon: Settings },
 ]
 
 interface NavLinksProps {

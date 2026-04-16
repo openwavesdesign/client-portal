@@ -9,7 +9,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var s=JSON.parse(localStorage.getItem('client-portal-settings')||'{}');if(s.display&&s.display.theme==='dark')document.documentElement.classList.add('dark')}catch(e){}`,
+          }}
+        />
+      </head>
       <body>
         {children}
         <Toaster richColors position="top-right" />
