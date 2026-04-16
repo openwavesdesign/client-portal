@@ -17,6 +17,8 @@ export type Database = {
           ended_at: string | null
           status: "active" | "archived"
           hourly_rate: number
+          on_maintenance_plan: boolean
+          maintenance_rate: number
           notes: string | null
           created_at: string
         }
@@ -27,6 +29,8 @@ export type Database = {
           ended_at?: string | null
           status?: "active" | "archived"
           hourly_rate?: number
+          on_maintenance_plan?: boolean
+          maintenance_rate?: number
           notes?: string | null
           created_at?: string
         }
@@ -37,6 +41,8 @@ export type Database = {
           ended_at?: string | null
           status?: "active" | "archived"
           hourly_rate?: number
+          on_maintenance_plan?: boolean
+          maintenance_rate?: number
           notes?: string | null
           created_at?: string
         }
@@ -234,6 +240,47 @@ export type Database = {
           }
         ]
       }
+      maintenance_invoices: {
+        Row: {
+          id: string
+          client_id: string
+          year: number
+          invoice_number: string | null
+          invoiced: boolean
+          paid: boolean
+          notes: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          client_id: string
+          year: number
+          invoice_number?: string | null
+          invoiced?: boolean
+          paid?: boolean
+          notes?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          client_id?: string
+          year?: number
+          invoice_number?: string | null
+          invoiced?: boolean
+          paid?: boolean
+          notes?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       rate_history: {
         Row: {
           id: string
@@ -276,6 +323,8 @@ export type Database = {
           started_at: string | null
           ended_at: string | null
           hourly_rate: number
+          on_maintenance_plan: boolean
+          maintenance_rate: number
           project_count: number
           ytd_hours: number
           ytd_revenue: number
@@ -341,6 +390,9 @@ export type BillingRecord = Database["public"]["Tables"]["billing_records"]["Row
 export type RateHistory = Database["public"]["Tables"]["rate_history"]["Row"]
 export type ClientYtdSummary = Database["public"]["Views"]["client_ytd_summary"]["Row"]
 export type ProjectActuals = Database["public"]["Views"]["project_actuals"]["Row"]
+
+export type MaintenanceInvoice = Database["public"]["Tables"]["maintenance_invoices"]["Row"]
+export type MaintenanceInvoiceInsert = Database["public"]["Tables"]["maintenance_invoices"]["Insert"]
 
 export type TimeEntryCategory =
   | "Project Work"

@@ -38,6 +38,7 @@ export async function updateClient(id: string, data: ClientUpdate) {
   const { error } = await supabase.from("clients").update(update).eq("id", id)
   if (error) throw new Error(error.message)
   revalidatePath("/dashboard")
+  revalidatePath("/maintenance")
 }
 
 export async function archiveClient(id: string) {

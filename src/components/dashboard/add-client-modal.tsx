@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
+import { Switch } from "@/components/ui/switch"
 import { createClient_ } from "@/app/(admin)/dashboard/actions"
 
 interface Props {
@@ -29,6 +30,8 @@ export function AddClientModal({ onSuccess }: Props) {
     ended_at: "",
     hourly_rate: "0",
     notes: "",
+    on_maintenance_plan: false,
+    maintenance_rate: "0",
   })
 
   function set(field: string, value: string) {
@@ -46,10 +49,12 @@ export function AddClientModal({ onSuccess }: Props) {
         hourly_rate: parseFloat(form.hourly_rate) || 0,
         notes: form.notes || null,
         status: "active",
+        on_maintenance_plan: form.on_maintenance_plan,
+        maintenance_rate: parseFloat(form.maintenance_rate) || 0,
       })
       toast.success("Client created")
       setOpen(false)
-      setForm({ name: "", started_at: "", ended_at: "", hourly_rate: "0", notes: "" })
+      setForm({ name: "", started_at: "", ended_at: "", hourly_rate: "0", notes: "", on_maintenance_plan: false, maintenance_rate: "0" })
       onSuccess?.()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to create client")
@@ -110,6 +115,27 @@ export function AddClientModal({ onSuccess }: Props) {
                 onChange={(e) => set("hourly_rate", e.target.value)}
               />
             </div>
+            <div className="flex items-center gap-3 pt-1">
+              <Switch
+                id="on-maintenance-plan"
+                checked={form.on_maintenance_plan}
+                onCheckedChange={(v) => setForm((f) => ({ ...f, on_maintenance_plan: v }))}
+              />
+              <Label htmlFor="on-maintenance-plan">Maintenance Plan</Label>
+            </div>
+            {form.on_maintenance_plan && (
+              <div className="space-y-2">
+                <Label htmlFor="maintenance_rate">Annual Maintenance Rate ($)</Label>
+                <Input
+                  id="maintenance_rate"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.maintenance_rate}
+                  onChange={(e) => set("maintenance_rate", e.target.value)}
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
               <Textarea
