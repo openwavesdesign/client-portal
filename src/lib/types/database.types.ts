@@ -327,7 +327,6 @@ export type Database = {
           maintenance_rate: number
           project_count: number
           ytd_hours: number
-          maintenance_ytd: number
           ytd_revenue: number
           outstanding_balance: number
         }
