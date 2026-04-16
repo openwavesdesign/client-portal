@@ -70,6 +70,8 @@ export function ClientsTable({ clients }: Props) {
     started_at: "",
     ended_at: "",
     hourly_rate: "0",
+    on_maintenance_plan: false,
+    maintenance_rate: "0",
   })
   const [saving, setSaving] = useState(false)
 
@@ -93,6 +95,8 @@ export function ClientsTable({ clients }: Props) {
       started_at: client.started_at ?? "",
       ended_at: client.ended_at ?? "",
       hourly_rate: String(client.hourly_rate),
+      on_maintenance_plan: client.on_maintenance_plan,
+      maintenance_rate: String(client.maintenance_rate),
     })
     setEditClient(client)
   }
@@ -107,6 +111,8 @@ export function ClientsTable({ clients }: Props) {
         started_at: editForm.started_at || null,
         ended_at: editForm.ended_at || null,
         hourly_rate: parseFloat(editForm.hourly_rate) || 0,
+        on_maintenance_plan: editForm.on_maintenance_plan,
+        maintenance_rate: parseFloat(editForm.maintenance_rate) || 0,
       })
       toast.success("Client updated")
       setEditClient(null)
@@ -181,7 +187,14 @@ export function ClientsTable({ clients }: Props) {
             ) : (
               displayed.map((client) => (
                 <TableRow key={client.id}>
-                  <TableCell className={`font-medium${!isClientActive(client) ? " bg-red-50 dark:bg-red-950/30" : ""}`}>{client.name}</TableCell>
+                  <TableCell className={`font-medium${!isClientActive(client) ? " bg-red-50 dark:bg-red-950/30" : ""}`}>
+                    <div className="flex items-center gap-2">
+                      {client.name}
+                      {client.on_maintenance_plan && (
+                        <Badge variant="secondary" className="text-xs">Maint.</Badge>
+                      )}
+                    </div>
+                  </TableCell>
                   {cols.status && (
                     <TableCell>
                       <Badge variant={client.status === "active" ? "active" : "inactive"}>
@@ -306,6 +319,26 @@ export function ClientsTable({ clients }: Props) {
                 onChange={(e) => setEditForm((f) => ({ ...f, hourly_rate: e.target.value }))}
               />
             </div>
+            <div className="flex items-center gap-3 pt-1">
+              <Switch
+                id="edit-on-maintenance-plan"
+                checked={editForm.on_maintenance_plan}
+                onCheckedChange={(v) => setEditForm((f) => ({ ...f, on_maintenance_plan: v }))}
+              />
+              <Label htmlFor="edit-on-maintenance-plan">Maintenance Plan</Label>
+            </div>
+            {editForm.on_maintenance_plan && (
+              <div className="space-y-2">
+                <Label>Annual Maintenance Rate ($)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={editForm.maintenance_rate}
+                  onChange={(e) => setEditForm((f) => ({ ...f, maintenance_rate: e.target.value }))}
+                />
+              </div>
+            )}
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setEditClient(null)}>
                 Cancel
