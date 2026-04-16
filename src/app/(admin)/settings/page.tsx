@@ -138,9 +138,16 @@ export default function SettingsPage() {
             onCheckedChange={(v) => setCol("ytdHours", v)}
           />
           <SettingRow
+            id="col-maintenance-plan"
+            label="Maint. Plan column"
+            description="Shows the annual maintenance plan amount per client."
+            checked={settings.clientList.columns.maintenancePlan}
+            onCheckedChange={(v) => setCol("maintenancePlan", v)}
+          />
+          <SettingRow
             id="col-ytd-revenue"
             label="YTD Revenue column"
-            description="Shows year-to-date revenue."
+            description="Shows year-to-date revenue (includes maintenance plan amounts)."
             checked={settings.clientList.columns.ytdRevenue}
             onCheckedChange={(v) => setCol("ytdRevenue", v)}
           />
