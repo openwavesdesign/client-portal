@@ -9,7 +9,10 @@ interface Props {
 
 export function YtdTotals({ clients, year }: Props) {
   const ytdHours = clients.reduce((sum, c) => sum + c.ytd_hours, 0)
-  const ytdRevenue = clients.reduce((sum, c) => sum + c.ytd_revenue, 0)
+  const ytdRevenue = clients.reduce(
+    (sum, c) => sum + c.ytd_revenue + (c.on_maintenance_plan ? c.maintenance_rate : 0),
+    0
+  )
   const outstanding = clients.reduce((sum, c) => sum + c.outstanding_balance, 0)
   const activeClients = clients.filter(isClientActive).length
   const activeProjects = clients

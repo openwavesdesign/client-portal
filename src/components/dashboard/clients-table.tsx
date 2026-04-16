@@ -221,7 +221,11 @@ export function ClientsTable({ clients }: Props) {
                     <TableCell className="text-right">{formatHours(client.ytd_hours)}</TableCell>
                   )}
                   {cols.ytdRevenue && (
-                    <TableCell className="text-right">{formatCurrency(client.ytd_revenue)}</TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(
+                        client.ytd_revenue + (client.on_maintenance_plan ? client.maintenance_rate : 0)
+                      )}
+                    </TableCell>
                   )}
                   {cols.outstanding && (
                     <TableCell className="text-right">
