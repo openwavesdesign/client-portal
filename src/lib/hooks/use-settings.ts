@@ -13,7 +13,6 @@ export interface PortalSettings {
       rate: boolean
       projects: boolean
       ytdHours: boolean
-      maintenancePlan: boolean
       ytdRevenue: boolean
       outstanding: boolean
     }
@@ -32,7 +31,6 @@ export const DEFAULT_SETTINGS: PortalSettings = {
       rate: false,
       projects: false,
       ytdHours: true,
-      maintenancePlan: true,
       ytdRevenue: true,
       outstanding: true,
     },

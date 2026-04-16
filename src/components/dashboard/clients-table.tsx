@@ -84,7 +84,6 @@ export function ClientsTable({ clients }: Props) {
     cols.rate,
     cols.projects,
     cols.ytdHours,
-    cols.maintenancePlan,
     cols.ytdRevenue,
     cols.outstanding,
   ].filter(Boolean).length
@@ -173,7 +172,6 @@ export function ClientsTable({ clients }: Props) {
               {cols.rate && <TableHead className="text-right">Rate</TableHead>}
               {cols.projects && <TableHead className="text-right">Projects</TableHead>}
               {cols.ytdHours && <TableHead className="text-right">YTD Hours</TableHead>}
-              {cols.maintenancePlan && <TableHead className="text-right">Maint. Plan</TableHead>}
               {cols.ytdRevenue && <TableHead className="text-right">YTD Revenue</TableHead>}
               {cols.outstanding && <TableHead className="text-right">Outstanding</TableHead>}
               <TableHead className="w-[50px]"></TableHead>
@@ -221,13 +219,6 @@ export function ClientsTable({ clients }: Props) {
                   )}
                   {cols.ytdHours && (
                     <TableCell className="text-right">{formatHours(client.ytd_hours)}</TableCell>
-                  )}
-                  {cols.maintenancePlan && (
-                    <TableCell className="text-right">
-                      {client.on_maintenance_plan
-                        ? formatCurrency(client.maintenance_ytd)
-                        : "—"}
-                    </TableCell>
                   )}
                   {cols.ytdRevenue && (
                     <TableCell className="text-right">{formatCurrency(client.ytd_revenue)}</TableCell>
