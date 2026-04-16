@@ -148,7 +148,7 @@ export function ClientsTable({ clients }: Props) {
             htmlFor="dashboard-filter-active"
             className="text-sm text-[hsl(var(--muted-foreground))] cursor-pointer"
           >
-            Show inactive clients
+            {filterActive ? "Show active clients" : "Show all clients"}
           </Label>
         </div>
         <p className="text-sm text-[hsl(var(--muted-foreground))]">
@@ -181,7 +181,7 @@ export function ClientsTable({ clients }: Props) {
             ) : (
               displayed.map((client) => (
                 <TableRow key={client.id}>
-                  <TableCell className="font-medium">{client.name}</TableCell>
+                  <TableCell className={`font-medium${!isClientActive(client) ? " bg-red-50 dark:bg-red-950/30" : ""}`}>{client.name}</TableCell>
                   {cols.status && (
                     <TableCell>
                       <Badge variant={client.status === "active" ? "active" : "inactive"}>
