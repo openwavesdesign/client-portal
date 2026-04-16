@@ -44,6 +44,7 @@ import { formatCurrency, formatHours, formatDate, isClientActive } from "@/lib/u
 import type { ClientYtdSummary } from "@/lib/types/database.types"
 import { updateClient, archiveClient, restoreClient } from "@/app/(admin)/dashboard/actions"
 import { useSettings, DEFAULT_SETTINGS } from "@/lib/hooks/use-settings"
+import { Switch } from "@/components/ui/switch"
 
 interface Props {
   clients: ClientYtdSummary[]
@@ -51,9 +52,16 @@ interface Props {
 
 export function ClientsTable({ clients }: Props) {
   const router = useRouter()
-  const { settings, mounted } = useSettings()
+  const { settings, updateSettings, mounted } = useSettings()
   const cols = mounted ? settings.clientList.columns : DEFAULT_SETTINGS.clientList.columns
   const filterActive = mounted ? settings.clientList.filterActive : true
+
+  function toggleFilterActive(value: boolean) {
+    updateSettings((prev) => ({
+      ...prev,
+      clientList: { ...prev.clientList, filterActive: value },
+    }))
+  }
 
   const [editClient, setEditClient] = useState<ClientYtdSummary | null>(null)
   const [archiveId, setArchiveId] = useState<string | null>(null)
@@ -129,7 +137,20 @@ export function ClientsTable({ clients }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Switch
+            id="dashboard-filter-active"
+            checked={!filterActive}
+            onCheckedChange={(v) => toggleFilterActive(!v)}
+          />
+          <Label
+            htmlFor="dashboard-filter-active"
+            className="text-sm text-[hsl(var(--muted-foreground))] cursor-pointer"
+          >
+            Show inactive clients
+          </Label>
+        </div>
         <p className="text-sm text-[hsl(var(--muted-foreground))]">
           {displayed.length} client{displayed.length !== 1 ? "s" : ""}
         </p>
