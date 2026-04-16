@@ -19,10 +19,13 @@ export function YtdTotals({ clients, year }: Props) {
     .filter(isClientActive)
     .reduce((sum, c) => sum + c.project_count, 0)
 
+  const ytdTotalInvoiced = ytdRevenue + outstanding
+
   const stats: { label: string; value: string }[] = [
     { label: "YTD Hours", value: `${formatHours(ytdHours)} hrs` },
     { label: "YTD Revenue", value: formatCurrency(ytdRevenue) },
     { label: "Outstanding Balance", value: formatCurrency(outstanding) },
+    { label: "YTD Total Invoiced", value: formatCurrency(ytdTotalInvoiced) },
     { label: "Active Clients", value: String(activeClients) },
     { label: "Active Projects", value: String(activeProjects) },
   ]
@@ -32,7 +35,7 @@ export function YtdTotals({ clients, year }: Props) {
       <h2 className="text-sm font-medium text-[hsl(var(--muted-foreground))]">
         {year} Year-to-Date
       </h2>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {stats.map((stat) => (
           <Card key={stat.label}>
             <CardContent className="p-4">
